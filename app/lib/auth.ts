@@ -1,28 +1,28 @@
 import GoogleProvider from "next-auth/providers/google"
 import GithubProvider from "next-auth/providers/github"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { NextAuthOptions } from "next-auth"
+import { AuthOptions } from "next-auth"
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import prisma from "./prisma";
 
-export const authOptions = {
+
+export const authOptions: AuthOptions = {
+    adapter: PrismaAdapter(prisma),
     providers: [
         CredentialsProvider({
-            name: "Signup with your email and password",
+            name: "Username and Password",
             credentials: {
                 username: { label: "Username", type: "text", placeholder: "username" },
                 password: { label: "Password", type: "password", placeholder: "Password" },
                 confirmPassword: { label: "Confirm Password", type: "password", placeholder: "Confirm Password" },
             },
-            // async authorize(credentials, req) {
-
-            // }
-        }),
-        GoogleProvider({
-            clientId: "aa",
-            clientSecret: "aa"
-        }),
-        GithubProvider({
-            clientId: "aa",
-            clientSecret: "aa"
+            async authorize(credentials) {
+                if (credentials?.password === credentials?.confirmPassword) {
+                    return { id: "1", name: "test", email: "" };
+                } else {
+                    throw new Error("Passwords do not match");
+                }
+            }
         }),
     ]
-} satisfies NextAuthOptions
+};
