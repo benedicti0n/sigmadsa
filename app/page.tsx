@@ -1,7 +1,9 @@
+import LandingPage from "./components/LandingPage";
+
 export default function Home() {
   return (
-    <div>
-      <h1>init</h1>
+    <div className=" min-h-screen w-full">
+      <LandingPage />
     </div>
   );
 }
